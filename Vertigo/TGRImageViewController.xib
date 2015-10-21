@@ -31,6 +31,13 @@
                                 <outletCollection property="gestureRecognizers" destination="vr9-pv-9Ja" appends="YES" id="W6T-9y-6GY"/>
                             </connections>
                         </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KML-Rk-KwC">
+                            <rect key="frame" x="95" y="182" width="70" height="32"/>
+                            <animations/>
+                            <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="26"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                     </subviews>
                     <animations/>
                     <constraints>
@@ -38,7 +45,9 @@
                         <constraint firstItem="YzD-IK-hmd" firstAttribute="leading" secondItem="mKd-iv-BEJ" secondAttribute="leading" id="Zgp-k4-uvU"/>
                         <constraint firstAttribute="trailing" secondItem="YzD-IK-hmd" secondAttribute="trailing" id="aHU-af-y1g"/>
                         <constraint firstAttribute="bottom" secondItem="YzD-IK-hmd" secondAttribute="bottom" id="aV6-ba-N9b"/>
+                        <constraint firstItem="KML-Rk-KwC" firstAttribute="leading" secondItem="mKd-iv-BEJ" secondAttribute="leading" constant="95" id="g9d-kd-MrN"/>
                         <constraint firstItem="YzD-IK-hmd" firstAttribute="top" secondItem="mKd-iv-BEJ" secondAttribute="top" id="jE3-0O-snn"/>
+                        <constraint firstItem="KML-Rk-KwC" firstAttribute="top" secondItem="mKd-iv-BEJ" secondAttribute="top" constant="182" id="kYE-nW-hre"/>
                         <constraint firstItem="YzD-IK-hmd" firstAttribute="height" secondItem="mKd-iv-BEJ" secondAttribute="height" id="nbe-kx-HEA"/>
                     </constraints>
                     <connections>

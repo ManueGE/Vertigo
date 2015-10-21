@@ -47,7 +47,7 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    return NO;
+    return YES;
 }
 
 #pragma mark - UIScrollViewDelegate methods

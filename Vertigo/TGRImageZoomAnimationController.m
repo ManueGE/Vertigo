@@ -58,6 +58,7 @@
     
     [self animateTransitionFromImageView:self.referenceImageView
                              toImageView:toViewController.destinationImageView
+                                 reverse:NO
                              withContext:transitionContext];
     
 }
@@ -71,10 +72,11 @@
     
     [self animateTransitionFromImageView:fromViewController.destinationImageView
                              toImageView:self.referenceImageView
+                                 reverse:YES
                              withContext:transitionContext];
 }
 
-- (void) animateTransitionFromImageView:(UIImageView *) fromImageView toImageView:(UIImageView *) toImageView withContext:(id<UIViewControllerContextTransitioning>)transitionContext {
+- (void) animateTransitionFromImageView:(UIImageView *) fromImageView toImageView:(UIImageView *) toImageView reverse:(BOOL) reverse withContext:(id<UIViewControllerContextTransitioning>)transitionContext {
     
     // Get the view controllers participating in the transition
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
@@ -92,11 +94,20 @@
     fromImageView.alpha = 0;
     
     // Hide destinationImageView and create an snapshot of the next view controller without it
-    toImageView.alpha = 0;
-    UIView * toSnapshot = [toViewController.view snapshotViewAfterScreenUpdates:YES];
-    toSnapshot.alpha = 0;
-    [transitionView addSubview:toSnapshot];
+    toImageView.alpha = reverse ? 1 : 0;
     
+    UIView * toSnapshot = nil;
+    if (reverse) {
+        [transitionView addSubview:toViewController.view];
+        toViewController.view.alpha = 1;
+    }
+    
+    else {
+        toSnapshot = [toViewController.view snapshotViewAfterScreenUpdates:YES];
+        toSnapshot.alpha = 0;
+        [transitionView addSubview:toSnapshot];
+    }
+
     CGFloat duration = 0.6;
     // Animates the toSnapshot alpha
     [UIView animateWithDuration:duration/2
@@ -142,6 +153,8 @@
                          // Add the destination view
                          [transitionContext.containerView addSubview:toViewController.view];
                          toImageView.alpha = 1;
+                         
+                         fromViewController.view.alpha = 1;
                          
                          // mark as complete
                          [transitionContext completeTransition:YES];
