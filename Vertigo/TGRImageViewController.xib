@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
@@ -19,13 +19,11 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" maximumZoomScale="2" id="mKd-iv-BEJ">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" maximumZoomScale="2" translatesAutoresizingMaskIntoConstraints="NO" id="mKd-iv-BEJ">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
-                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="YzD-IK-hmd">
+                        <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YzD-IK-hmd">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <animations/>
                             <gestureRecognizers/>
                             <connections>
@@ -35,6 +33,14 @@
                         </imageView>
                     </subviews>
                     <animations/>
+                    <constraints>
+                        <constraint firstItem="YzD-IK-hmd" firstAttribute="width" secondItem="mKd-iv-BEJ" secondAttribute="width" id="0gh-MX-Wdd"/>
+                        <constraint firstItem="YzD-IK-hmd" firstAttribute="leading" secondItem="mKd-iv-BEJ" secondAttribute="leading" id="Zgp-k4-uvU"/>
+                        <constraint firstAttribute="trailing" secondItem="YzD-IK-hmd" secondAttribute="trailing" id="aHU-af-y1g"/>
+                        <constraint firstAttribute="bottom" secondItem="YzD-IK-hmd" secondAttribute="bottom" id="aV6-ba-N9b"/>
+                        <constraint firstItem="YzD-IK-hmd" firstAttribute="top" secondItem="mKd-iv-BEJ" secondAttribute="top" id="jE3-0O-snn"/>
+                        <constraint firstItem="YzD-IK-hmd" firstAttribute="height" secondItem="mKd-iv-BEJ" secondAttribute="height" id="nbe-kx-HEA"/>
+                    </constraints>
                     <connections>
                         <outlet property="delegate" destination="-1" id="zNw-31-f6r"/>
                     </connections>
@@ -42,6 +48,12 @@
             </subviews>
             <animations/>
             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="mKd-iv-BEJ" firstAttribute="top" secondItem="1" secondAttribute="top" id="SOO-b8-lWz"/>
+                <constraint firstAttribute="bottom" secondItem="mKd-iv-BEJ" secondAttribute="bottom" id="bpw-vU-HDz"/>
+                <constraint firstItem="mKd-iv-BEJ" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="eL7-hm-yr0"/>
+                <constraint firstAttribute="trailing" secondItem="mKd-iv-BEJ" secondAttribute="trailing" id="pbE-h5-OB5"/>
+            </constraints>
             <nil key="simulatedStatusBarMetrics"/>
         </view>
         <tapGestureRecognizer id="dlf-fy-eoH" userLabel="Single Tap Gesture Recognizer">
