@@ -21,8 +21,13 @@
 // THE SOFTWARE.
 
 #import "TGRImageZoomAnimationController.h"
+#import <AVFoundation/AVFoundation.h>
+#import "TGRImageViewController.h"
+#import "TGRVertigoDestination.h"
+
 #import "TGRImageViewController.h"
 #import "UIImage+AspectFit.h"
+
 
 @implementation TGRImageZoomAnimationController
 - (id)initWithReferenceImageView:(UIImageView *)referenceImageView {
@@ -50,55 +55,82 @@
 }
 
 - (void)animateZoomInTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
-	// Get the view controllers participating in the transition
-	UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-	TGRImageViewController *toViewController = (TGRImageViewController *)[transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-	NSAssert([toViewController isKindOfClass:TGRImageViewController.class], @"*** toViewController must be a TGRImageViewController!");
-	
-	// Create a temporary view for the zoom in transition and set the initial frame based
-	// on the reference image view
-	UIImageView *transitionView = [[UIImageView alloc] initWithImage:self.referenceImageView.image];
-	transitionView.contentMode = UIViewContentModeScaleAspectFill;
-	transitionView.clipsToBounds = YES;
-	transitionView.frame = [transitionContext.containerView convertRect:self.referenceImageView.bounds
-															   fromView:self.referenceImageView];
-	
-	if (self.referenceImageView.contentMode == UIViewContentModeScaleAspectFit) {
-		CGRect imageFrame = [self.referenceImageView.image tgr_aspectFitRectForSize:self.referenceImageView.frame.size];
-		transitionView.frame = [transitionContext.containerView convertRect:imageFrame
-																   fromView:self.referenceImageView];
-	}
-	
-	[transitionContext.containerView addSubview:transitionView];
-	
-	// Compute the final frame for the temporary view
-	CGRect finalFrame = [transitionContext finalFrameForViewController:toViewController];
-	CGRect transitionViewFinalFrame = [self.referenceImageView.image tgr_aspectFitRectForSize:finalFrame.size];
-	
-	// Perform the transition using a spring motion effect
-	NSTimeInterval duration = [self transitionDuration:transitionContext];
-	
-	self.referenceImageView.alpha = 0;
-	
-	[UIView animateWithDuration:duration
-						  delay:0
-		 usingSpringWithDamping:0.7
-		  initialSpringVelocity:0
-						options:UIViewAnimationOptionCurveLinear
-					 animations:^{
-						 fromViewController.view.alpha = 0;
-						 transitionView.frame = transitionViewFinalFrame;
-					 }
-					 completion:^(BOOL finished) {
-						 fromViewController.view.alpha = 1;
-						 
-						 [transitionView removeFromSuperview];
-						 [transitionContext.containerView addSubview:toViewController.view];
-						 toViewController.view.frame = finalFrame;
-						 
-						 [transitionContext completeTransition:YES];
-					 }];
+    
+    // Get the view controllers participating in the transition
+    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController<TGRVertigoDestination> *toViewController = (TGRImageViewController *)[transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+    NSAssert([toViewController conformsToProtocol:@protocol(TGRVertigoDestination)], @"*** toViewController must conforms with  TGRVertigoDestination protocol!");
+    
+    // Get the final frame and set it to the final controller
+    CGRect finalFrame = [transitionContext finalFrameForViewController:toViewController];
+    toViewController.view.frame = finalFrame;
+    
+    // Create the transition view and set the frame as the final one
+    UIView * transitionView = [[UIView alloc] initWithFrame:finalFrame];
+    [transitionContext.containerView addSubview:transitionView];
+    
+    // Snapshot of the from view
+    self.referenceImageView.alpha = 0;
+    UIView * fromSnapshot = [fromViewController.view snapshotViewAfterScreenUpdates:YES];
+    [transitionView addSubview:fromSnapshot];
+    
+    // Hide destinationImageView and create an snapshot of the next view controller without it
+    toViewController.destinationImageView.alpha = 0;
+    UIView * toSnapshot = [toViewController.view snapshotViewAfterScreenUpdates:YES];
+    toSnapshot.alpha = 0;
+    [transitionView addSubview:toSnapshot];
+    
+    // Animates the toSnapshot alpha
+    [UIView animateWithDuration:3
+                     animations:^{
+                         toSnapshot.alpha = 1;
+                     }];
+    
+    // Create the image snapshot
+    UIImageView * destinationImageView = toViewController.destinationImageView;
+    CGRect imageViewInitialFrame;
+    if (self.referenceImageView.contentMode == UIViewContentModeScaleAspectFit) {
+        imageViewInitialFrame = AVMakeRectWithAspectRatioInsideRect(self.referenceImageView.image.size, self.referenceImageView.frame);
+    }
+    
+    else {
+        imageViewInitialFrame = [fromViewController.view convertRect:self.referenceImageView.bounds
+                                    fromView:self.referenceImageView];
+    }
+    
+    
+    UIImageView * transitionImageView = [[UIImageView alloc] initWithFrame:imageViewInitialFrame];
+    transitionImageView.clipsToBounds = YES;
+    transitionImageView.image = destinationImageView.image;
+    transitionImageView.contentMode = destinationImageView.contentMode;
+    [transitionView addSubview:transitionImageView];
+    
+    // Calculate destination view controller frame
+    CGRect imgeViewFinalFrame = toViewController.destinationImageView.frame;
+    
+    // Animate the image position
+    [UIView animateWithDuration:7
+                          delay:0
+         usingSpringWithDamping:0.7
+          initialSpringVelocity:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         transitionImageView.frame = imgeViewFinalFrame;
+                     }
+                     completion:^(BOOL finished) {
+                         // Remove transition view
+                         [transitionView removeFromSuperview];
+                         
+                         // Add the destination view
+                         [transitionContext.containerView addSubview:toViewController.view];
+                         toViewController.destinationImageView.alpha = 1;
+                         
+                         // mark as complete
+                         [transitionContext completeTransition:YES];
+                     }];
 }
+
 
 - (void)animateZoomOutTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
 	// Get the view controllers participating in the transition
@@ -113,28 +145,31 @@
 	[transitionContext.containerView sendSubviewToBack:toViewController.view];
 	
 	// Compute the initial frame for the temporary view based on the image view
-	// of the TGRImageViewController
-	CGRect transitionViewInitialFrame = [fromViewController.imageView.image tgr_aspectFitRectForSize:fromViewController.imageView.bounds.size];
-	transitionViewInitialFrame = [transitionContext.containerView convertRect:transitionViewInitialFrame
-																	 fromView:fromViewController.imageView];
-	
-	// Compute the final frame for the temporary view based on the reference
-	// image view
-	CGRect transitionViewFinalFrame = [transitionContext.containerView convertRect:self.referenceImageView.bounds
-																		  fromView:self.referenceImageView];
-	
-	if (self.referenceImageView.contentMode == UIViewContentModeScaleAspectFit) {
-		CGRect imageFrame = [self.referenceImageView.image tgr_aspectFitRectForSize:self.referenceImageView.frame.size];
-		transitionViewFinalFrame = [transitionContext.containerView convertRect:imageFrame
-																	   fromView:self.referenceImageView];
-	}
-	
-	if (UIApplication.sharedApplication.isStatusBarHidden && ![toViewController prefersStatusBarHidden]) {
-		transitionViewFinalFrame = CGRectOffset(transitionViewFinalFrame, 0, 20);
-	}
-	
-	// Create a temporary view for the zoom out transition based on the image
-	// view controller contents
+    // of the TGRImageViewController
+    CGRect transitionViewInitialFrame = [fromViewController.imageView.image tgr_aspectFitRectForSize:fromViewController.imageView.bounds.size];
+    transitionViewInitialFrame = [transitionContext.containerView convertRect:transitionViewInitialFrame
+                                                                     fromView:fromViewController.imageView];
+    
+    CGRect transitionViewFinalFrame;
+    
+    // Compute the final frame for the temporary view based on the reference
+    if (self.referenceImageView.contentMode == UIViewContentModeScaleAspectFit) {
+        CGRect imageFrame = [self.referenceImageView.image tgr_aspectFitRectForSize:self.referenceImageView.frame.size];
+        transitionViewFinalFrame = [transitionContext.containerView convertRect:imageFrame
+                                                                       fromView:self.referenceImageView];
+    }
+    
+    else {
+        transitionViewFinalFrame = [transitionContext.containerView convertRect:self.referenceImageView.bounds
+                                                                       fromView:self.referenceImageView];
+    }
+    
+    if (UIApplication.sharedApplication.isStatusBarHidden && ![toViewController prefersStatusBarHidden]) {
+        transitionViewFinalFrame = CGRectOffset(transitionViewFinalFrame, 0, 20);
+    }
+    
+    // Create a temporary view for the zoom out transition based on the image
+    // view controller contents
 	UIImageView *transitionView = [[UIImageView alloc] initWithImage:fromViewController.imageView.image];
 	transitionView.contentMode = UIViewContentModeScaleAspectFill;
 	transitionView.clipsToBounds = YES;
@@ -157,5 +192,6 @@
 						 [transitionContext completeTransition:YES];
 					 }];
 }
+
 
 @end

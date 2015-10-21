@@ -21,12 +21,13 @@
 // THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+#import "TGRVertigoDestination.h"
 
 // Simple full screen image viewer.
 //
 // Allows the user to view an image in full screen and double tap to zoom it.
 // The view controller can be dismissed with a single tap.
-@interface TGRImageViewController : UIViewController
+@interface TGRImageViewController : UIViewController <TGRVertigoDestination>
 
 // The scroll view used for zooming.
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;

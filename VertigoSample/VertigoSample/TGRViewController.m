@@ -13,6 +13,7 @@
 @interface TGRViewController () <UIViewControllerTransitioningDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *imageButton;
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 
 @end
 
@@ -27,14 +28,14 @@
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
     if ([presented isKindOfClass:TGRImageViewController.class]) {
-        return [[TGRImageZoomAnimationController alloc] initWithReferenceImageView:self.imageButton.imageView];
+        return [[TGRImageZoomAnimationController alloc] initWithReferenceImageView:self.imageView];
     }
     return nil;
 }
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
     if ([dismissed isKindOfClass:TGRImageViewController.class]) {
-        return [[TGRImageZoomAnimationController alloc] initWithReferenceImageView:self.imageButton.imageView];
+        return [[TGRImageZoomAnimationController alloc] initWithReferenceImageView:self.imageView];
     }
     return nil;
 }
@@ -48,4 +49,10 @@
     [self presentViewController:viewController animated:YES completion:nil];
 }
 
+- (IBAction)showAspectFitImage:(id)sender {
+    TGRImageViewController *viewController = [[TGRImageViewController alloc] initWithImage:self.imageView.image];
+    viewController.transitioningDelegate = self;
+    
+    [self presentViewController:viewController animated:YES completion:nil];
+}
 @end

@@ -89,4 +89,9 @@
     }
 }
 
+#pragma mark - vertigo destination
+- (UIImageView *)destinationImageView {
+    return self.imageView;
+}
+
 @end

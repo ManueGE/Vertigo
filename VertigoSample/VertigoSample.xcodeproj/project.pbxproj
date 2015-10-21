@@ -39,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		327CA8841BD7E5C200744C3B /* TGRVertigoDestination.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGRVertigoDestination.h; sourceTree = "<group>"; };
 		72695EDD1A711856003409FC /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		99A9FE1C1802D6F100074858 /* VertigoSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VertigoSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99A9FE1F1802D6F100074858 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -170,11 +171,12 @@
 		99A9FE601802D76700074858 /* Vertigo */ = {
 			isa = PBXGroup;
 			children = (
+				327CA8841BD7E5C200744C3B /* TGRVertigoDestination.h */,
+				99A9FE641802D76800074858 /* TGRImageZoomAnimationController.h */,
+				99A9FE651802D76800074858 /* TGRImageZoomAnimationController.m */,
 				99A9FE611802D76800074858 /* TGRImageViewController.h */,
 				99A9FE621802D76800074858 /* TGRImageViewController.m */,
 				99A9FE631802D76800074858 /* TGRImageViewController.xib */,
-				99A9FE641802D76800074858 /* TGRImageZoomAnimationController.h */,
-				99A9FE651802D76800074858 /* TGRImageZoomAnimationController.m */,
 				99A9FE661802D76800074858 /* UIImage+AspectFit.h */,
 				99A9FE671802D76800074858 /* UIImage+AspectFit.m */,
 			);
