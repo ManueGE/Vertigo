@@ -97,7 +97,7 @@
     toSnapshot.alpha = 0;
     [transitionView addSubview:toSnapshot];
     
-    CGFloat duration = 5;
+    CGFloat duration = 0.6;
     // Animates the toSnapshot alpha
     [UIView animateWithDuration:duration/2
                      animations:^{
@@ -107,14 +107,15 @@
     // Create the image snapshot
     CGRect imageViewInitialFrame;
     if (fromImageView.contentMode == UIViewContentModeScaleAspectFit) {
-        imageViewInitialFrame = AVMakeRectWithAspectRatioInsideRect(fromImageView.image.size, fromImageView.frame);
+        imageViewInitialFrame = AVMakeRectWithAspectRatioInsideRect(fromImageView.image.size, fromImageView.bounds);
+        imageViewInitialFrame = [fromViewController.view convertRect:imageViewInitialFrame
+                                                            fromView:fromImageView];
     }
     
     else {
         imageViewInitialFrame = [fromViewController.view convertRect:fromImageView.bounds
                                                             fromView:fromImageView];
     }
-    
     
     UIImageView * transitionImageView = [[UIImageView alloc] initWithFrame:imageViewInitialFrame];
     transitionImageView.clipsToBounds = YES;
