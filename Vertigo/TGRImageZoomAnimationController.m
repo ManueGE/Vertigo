@@ -82,7 +82,7 @@
     [transitionView addSubview:toSnapshot];
     
     // Animates the toSnapshot alpha
-    [UIView animateWithDuration:3
+    [UIView animateWithDuration:0.3
                      animations:^{
                          toSnapshot.alpha = 1;
                      }];
@@ -110,7 +110,7 @@
     CGRect imgeViewFinalFrame = toViewController.destinationImageView.frame;
     
     // Animate the image position
-    [UIView animateWithDuration:7
+    [UIView animateWithDuration:0.6
                           delay:0
          usingSpringWithDamping:0.7
           initialSpringVelocity:0
