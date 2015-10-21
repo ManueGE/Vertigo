@@ -45,14 +45,14 @@
 - (IBAction)showImage {
     TGRImageViewController *viewController = [[TGRImageViewController alloc] initWithImage:[self.imageButton imageForState:UIControlStateNormal]];
     viewController.transitioningDelegate = self;
-    
+    viewController.modalPresentationCapturesStatusBarAppearance = YES;
     [self presentViewController:viewController animated:YES completion:nil];
 }
 
 - (IBAction)showAspectFitImage:(id)sender {
     TGRImageViewController *viewController = [[TGRImageViewController alloc] initWithImage:self.imageView.image];
     viewController.transitioningDelegate = self;
-    
+    viewController.modalPresentationCapturesStatusBarAppearance = self;
     [self presentViewController:viewController animated:YES completion:nil];
 }
 @end
