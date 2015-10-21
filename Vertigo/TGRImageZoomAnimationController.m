@@ -93,26 +93,37 @@
     // Snapshot of the from view
     fromImageView.alpha = 0;
     
-    // Hide destinationImageView and create an snapshot of the next view controller without it
-    toImageView.alpha = reverse ? 1 : 0;
+    // Hide both image views
+    toImageView.alpha = 0;
+    fromImageView.alpha = 0;
     
-    UIView * toSnapshot = nil;
+    // we create a snapshot of the presenting controller and we animate it appearing/dissappearing
+    UIView * snapshot = nil;
+    CGFloat snapshotFinalAlpha;
     if (reverse) {
+        snapshot = [fromViewController.view snapshotViewAfterScreenUpdates:YES];
+        snapshotFinalAlpha = 0;
+        
         [transitionView addSubview:toViewController.view];
         toViewController.view.alpha = 1;
     }
     
     else {
-        toSnapshot = [toViewController.view snapshotViewAfterScreenUpdates:YES];
-        toSnapshot.alpha = 0;
-        [transitionView addSubview:toSnapshot];
+        snapshot = [toViewController.view snapshotViewAfterScreenUpdates:YES];
+        snapshot.alpha = 0;
+        snapshotFinalAlpha = 1;
     }
-
-    CGFloat duration = 0.6;
+    
+    [transitionView addSubview:snapshot];
+    
+    CGFloat duration = 0.7;
     // Animates the toSnapshot alpha
-    [UIView animateWithDuration:duration/2
+    [UIView animateWithDuration:duration/4
                      animations:^{
-                         toSnapshot.alpha = 1;
+                         snapshot.alpha = snapshotFinalAlpha;
+                     }
+                     completion:^(BOOL finished) {
+                         fromImageView.alpha = 1;
                      }];
     
     // Create the image snapshot
